@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "581386003747",
+    "firebase_url": "https://project-577a5.firebaseio.com",
+    "project_id": "project-577a5",
+    "storage_bucket": "project-577a5.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:581386003747:android:23d9bd9e7bbb605d",
+        "android_client_info": {
+          "package_name": "edu.skku.team10"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "581386003747-thev85b7dnfnhk9nap1pla72stdat96n.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "edu.skku.team10",
+            "certificate_hash": "004ab4f05102d49feaabc04fa0387a2cb38d9def"
+          }
+        },
+        {
+          "client_id": "581386003747-kfps9vp90qmc9og04dt79uhfb0pkkg3b.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyClNpuR0mt-k6R6-auAgkdDqWaZu2BS8oA"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "581386003747-kfps9vp90qmc9og04dt79uhfb0pkkg3b.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
