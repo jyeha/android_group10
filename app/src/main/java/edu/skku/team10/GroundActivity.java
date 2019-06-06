@@ -25,7 +25,10 @@ import com.google.gson.JsonParser;
 import com.ortiz.touchview.TouchImageView;
 
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Calendar;
+import java.util.List;
 
 import okhttp3.HttpUrl;
 import okhttp3.OkHttpClient;
@@ -37,6 +40,7 @@ public class GroundActivity extends AppCompatActivity {
     TouchImageView touchImageView;
     double lat, lon;
     OpenWeatherMapJSON parsedData;
+    int groundImgID;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -59,7 +63,8 @@ public class GroundActivity extends AppCompatActivity {
                 0,
                 gpsLocationListener);
 
-        touchImageView = findViewById(R.id.madang);
+        groundImgID = R.id.madang;
+        touchImageView = findViewById(groundImgID);
 
         try {
             WeatherAsyncTask mProcessTask = new WeatherAsyncTask();
@@ -68,6 +73,8 @@ public class GroundActivity extends AppCompatActivity {
             e.printStackTrace();
         }
         changeGroundImg();
+
+        updateTouchImageView();
 
     }
     public class WeatherAsyncTask extends AsyncTask<String, Void, OpenWeatherMapJSON> {
@@ -117,6 +124,7 @@ public class GroundActivity extends AppCompatActivity {
                 e.printStackTrace();
             }
             changeGroundImg();
+            updateTouchImageView();
         }
         public void onStatusChanged(String provider, int status, Bundle extras) {}
         public void onProviderEnabled(String provider) {}
@@ -129,14 +137,18 @@ public class GroundActivity extends AppCompatActivity {
         Log.d("weather", parsedData.weather.get(0).main);
         switch (parsedData.weather.get(0).main){
             case "Rain":
-                touchImageView.setImageResource(R.drawable.profile);
+                groundImgID = R.drawable.profile;
                 break;
             case "Clouds":
-                touchImageView.setImageResource(R.drawable.testimage);
+                groundImgID = R.drawable.testimage;
                 break;
             default:
-                touchImageView.setImageResource(R.drawable.profile);
+                groundImgID = R.drawable.profile;
                 break;
         }
+    }
+
+    private void updateTouchImageView(){
+        touchImageView.setImageResource(groundImgID);
     }
 }
