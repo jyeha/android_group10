@@ -2,32 +2,35 @@ package edu.skku.team10;
 
 import android.content.Context;
 import android.content.pm.PackageManager;
-import android.graphics.Point;
-import android.graphics.drawable.Drawable;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.graphics.Canvas;
+import android.graphics.Paint;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
 import android.os.AsyncTask;
 import android.os.Build;
+import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
-import android.view.Display;
-import android.view.View;
-import android.widget.Toast;
 
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.GenericTypeIndicator;
+import com.google.firebase.database.ValueEventListener;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonParser;
 import com.ortiz.touchview.TouchImageView;
 
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Calendar;
 import java.util.List;
 
 import okhttp3.HttpUrl;
@@ -36,17 +39,28 @@ import okhttp3.Request;
 import okhttp3.Response;
 
 public class GroundActivity extends AppCompatActivity {
-
+    private DatabaseReference mPostReference;
     TouchImageView touchImageView;
     double lat, lon;
     OpenWeatherMapJSON parsedData;
     int groundImgID;
+
+    List<CatInfo> catInfos;
+    List<FurnitureInfo> furnitureInfos;
+    List<ObjectOnGround> onGround;
+    int waitingProcesses = 3;
+
+    public interface Callback{
+        void success(String msg);
+        void fail();
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_ground);
 
+        //request permission
         if ( Build.VERSION.SDK_INT >= 23 &&
                 ContextCompat.checkSelfPermission( getApplicationContext(),
                         android.Manifest.permission.ACCESS_FINE_LOCATION ) != PackageManager.PERMISSION_GRANTED ) {
@@ -55,6 +69,7 @@ public class GroundActivity extends AppCompatActivity {
                     0 );
         }
 
+        //get weather with GPS location
         lon = 145.77;
         lat = -16.92;
         final LocationManager lm = (LocationManager)getSystemService(Context.LOCATION_SERVICE);
@@ -65,7 +80,6 @@ public class GroundActivity extends AppCompatActivity {
 
         groundImgID = R.id.madang;
         touchImageView = findViewById(groundImgID);
-
         try {
             WeatherAsyncTask mProcessTask = new WeatherAsyncTask();
             mProcessTask.execute().get();
@@ -74,9 +88,31 @@ public class GroundActivity extends AppCompatActivity {
         }
         changeGroundImg();
 
-        updateTouchImageView();
+        //connect firebase
+        mPostReference = FirebaseDatabase.getInstance().getReference();
 
+        //get cat Info, furniture Info, user
+        catInfos = new ArrayList<>();
+        furnitureInfos = new ArrayList<>();
+        onGround = new ArrayList<>();
+        getFirebaseDatabaseInfo(new Callback() {
+            @Override
+            public void success(String msg) {
+                Log.d(msg, "load success");
+                --waitingProcesses;
+                if(waitingProcesses == 0)
+                    databaseLoaded();
+            }
+            @Override
+            public void fail() {}
+        });
     }
+
+    void databaseLoaded(){
+
+        updateTouchImageView();
+    }
+
     public class WeatherAsyncTask extends AsyncTask<String, Void, OpenWeatherMapJSON> {
         OkHttpClient client = new OkHttpClient();
         @Override
@@ -131,6 +167,61 @@ public class GroundActivity extends AppCompatActivity {
         public void onProviderDisabled(String provider) {}
     };
 
+    //get cats info from firebase(server)
+    public void getFirebaseDatabaseInfo(final Callback callback) {
+        mPostReference.child("CatsInfo/catInfos").addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                Log.d("onDataChange", "Data is Updated");
+                for (DataSnapshot postSnapshot : dataSnapshot.getChildren()) {
+                    CatInfo get = postSnapshot.getValue(CatInfo.class);
+                    catInfos.add(get);
+                    Log.d("Name", catInfos.get(catInfos.size()-1).catName);
+                }
+                callback.success("cats");
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+                callback.fail();
+            }
+        });
+        mPostReference.child("FurnitureInfo").addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                Log.d("onDataChange", "Data is Updated");
+                for (DataSnapshot postSnapshot : dataSnapshot.getChildren()) {
+                    FurnitureInfo get = postSnapshot.getValue(FurnitureInfo.class);
+                    furnitureInfos.add(get);
+                    Log.d("Name", furnitureInfos.get(furnitureInfos.size()-1).furnitureName);
+                }
+                callback.success("furniture");
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+                callback.fail();
+            }
+        });
+        mPostReference.child("GroundInfo/FurniturePos").addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                Log.d("onDataChange", "Data is Updated");
+                for (DataSnapshot postSnapshot : dataSnapshot.getChildren()) {
+                    List<Float> get = postSnapshot.getValue(new GenericTypeIndicator<List<Float>>() {});
+                    onGround.add(new ObjectOnGround(get.get(0), get.get(1)));
+                    Log.d("posi", get.get(0).toString() + get.get(1).toString());
+                }
+                callback.success("funi-pos");
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+                callback.fail();
+            }
+        });
+    }
+
     private void changeGroundImg(){
         if(parsedData == null)
             return;
@@ -149,6 +240,30 @@ public class GroundActivity extends AppCompatActivity {
     }
 
     private void updateTouchImageView(){
-        touchImageView.setImageResource(groundImgID);
+        //touchImageView.setImageResource(groundImgID);
+
+        //create canvas, set background
+        Bitmap background = BitmapFactory.decodeResource(getResources(),groundImgID)
+                .copy(Bitmap.Config.ARGB_8888, true);
+        Canvas canvas = new Canvas(background);
+
+        //draw half-transparent circles, and furniture
+        Paint paint = new Paint();
+        paint.setStyle(Paint.Style.FILL);
+        paint.setARGB(127, 255, 255, 255);
+        for(ObjectOnGround o : onGround) {
+            if(o.furnitureID == -1)
+                canvas.drawCircle(background.getWidth() * o.position.x,
+                        background.getHeight() * o.position.y,
+                        background.getHeight() * o.radius, paint);
+            else {
+                //draw furniture
+                if(o.catID != -1){
+                    //draw cat
+                }
+            }
+        }
+
+        touchImageView.setImageBitmap(background);
     }
 }
