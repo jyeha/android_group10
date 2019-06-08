@@ -6,40 +6,25 @@ import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
-import android.graphics.Matrix;
 import android.graphics.Paint;
 import android.graphics.PointF;
-import android.graphics.drawable.Drawable;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
 import android.opengl.GLES30;
 import android.os.AsyncTask;
 import android.os.Build;
+import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.util.AttributeSet;
 import android.util.Log;
-import android.view.Gravity;
-import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
-import android.view.ViewGroup;
-import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
-import android.widget.BaseAdapter;
 import android.widget.Button;
-import android.widget.ImageView;
-import android.widget.LinearLayout;
-import android.widget.ListView;
-import android.widget.PopupWindow;
-import android.widget.TextView;
-import android.widget.Toast;
 
-import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -51,7 +36,9 @@ import com.google.gson.GsonBuilder;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonParser;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -186,6 +173,34 @@ public class GroundActivity extends AppCompatActivity {
             }
         });
 
+        Handler mHandler = new Handler();
+
+        Runnable mHandlerTask = new Runnable()
+        {
+            @Override
+            public void run() {
+                Log.d("update user cats", new SimpleDateFormat("yyyy/MM/dd/hh/mm").format(Calendar.getInstance().getTime()));
+                onGround = userInfo.updateCatsInfo(catInfos, onGround);
+                Map<String, Object> childUpdates = new HashMap<>();
+                childUpdates.put("/UserInfo/" + userName + "/catsInfo", userInfo.catsInfo);
+                childUpdates.put("/UserInfo/" + userName + "/groundFurn", userInfo.groundFurn);
+                if(userInfo.isCatChanged) {
+                    mPostReference.updateChildren(childUpdates);
+                    Log.d("update to database", "run");
+
+                }
+                for(ObjectOnGround o : onGround)
+                    o.catID = -1;
+                for(int i=0; i<catInfos.size(); ++i){
+                    if(userInfo.catsInfo.get(i).currentCome)
+                        onGround.get(userInfo.catsInfo.get(i).groundPos).catID = i;
+                }
+                updateTouchImageView();
+                userInfo.isCatChanged = false;
+                mHandler.postDelayed(this, 60000);
+            }
+        };
+        mHandlerTask.run();
         //get resource ids of furniture
         updateTouchImageView();
     }
@@ -309,6 +324,8 @@ public class GroundActivity extends AppCompatActivity {
                 if(get == null) Log.d("userdata","failed");
                 Log.d("groundFurn", get.groundFurn.toString());
                 Log.d("hasFurniture", get.hasFurniture.toString());
+                Log.d("cat0Info", get.catsInfo.get(0).comeTime);
+                Log.d("cat1Info", get.catsInfo.get(1).comeTime);
 
                 callback.success("userinfo");
             }
@@ -380,7 +397,7 @@ public class GroundActivity extends AppCompatActivity {
                 canvas.drawBitmap(catBitmap, drawPosX - (newFurnX/2), drawPosY - (newFurnY/2), paint);
             }
 
-            if(o.catID != -1){
+            if(userInfo.groundFurn.get(o.index) != -1 && o.catID != -1){
                 //draw cat
                 CatInfo c = catInfos.get(o.catID);
                 Bitmap catBitmap = BitmapFactory.decodeResource(getResources(), c.catImgID);
