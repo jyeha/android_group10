@@ -79,13 +79,15 @@ public class ClickerActivity extends AppCompatActivity {
             }
         });
 
-//        shop.setOnClickListener(new View.OnClickListener(){
-//            @Override
-//            public void onClick(View v){
-//                ToShop.putExtra("my_name", "TestAccount");
-//                startActivity(ToShop);
-//            }
-//        });
+
+        /*shop.setOnClickListener(new View.OnClickListener(){
+            @Override
+            public void onClick(View v){
+                ToShop.putExtra("my_name", "TestAccount");
+                startActivity(ToShop);
+            }
+        });*/
+
     }
 
     private void AfterDataLoad() {
