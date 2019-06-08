@@ -1,6 +1,7 @@
 package edu.skku.team10;
 
 import android.content.Intent;
+import android.content.res.Configuration;
 import android.os.AsyncTask;
 import android.renderscript.Sampler;
 import android.support.annotation.NonNull;
@@ -10,7 +11,12 @@ import android.util.Log;
 import android.view.GestureDetector;
 import android.view.MotionEvent;
 import android.view.View;
+import android.view.animation.AccelerateDecelerateInterpolator;
+import android.view.animation.AlphaAnimation;
+import android.view.animation.Animation;
 import android.widget.Button;
+import android.widget.ImageView;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.google.firebase.database.DataSnapshot;
@@ -25,12 +31,17 @@ import java.util.Map;
 
 public class ClickerActivity extends AppCompatActivity {
     private DatabaseReference mPostReference;
+    private CustomView TouchArea;
+    private float x=-1, y=-1;
+    private RelativeLayout container;
     public UserInfo user;
     public String userName;
     public int check_long=0;
     Intent ToShop;
     TextView info;
     Button promote, shop;
+    ImageView img;
+    Animation ani;
     GestureDetector detector;
 
     public interface Callback{
@@ -46,12 +57,14 @@ public class ClickerActivity extends AppCompatActivity {
         info = (TextView)findViewById(R.id.info);
         promote = (Button)findViewById(R.id.upgrade);
         shop = (Button)findViewById(R.id.GotoShop);
+        TouchArea=(CustomView)findViewById(R.id.customview);
+        container=(RelativeLayout)findViewById(R.id.RL);
 
         ToShop = new Intent(ClickerActivity.this, Store.class);
 
         mPostReference = FirebaseDatabase.getInstance().getReference();
-        //userName = "TestAccount";
-        userName = getIntent().getStringExtra("my_name");
+        userName = "TestAccount";
+        //userName = getIntent().getStringExtra("my_name");
         getFirebaseDatabaseInfo(new Callback() {
             @Override
             public void success(String msg) {
@@ -75,6 +88,20 @@ public class ClickerActivity extends AppCompatActivity {
             }
         });
     }
+
+    @Override
+    protected void onSaveInstanceState(Bundle outState){
+        super.onSaveInstanceState(outState);
+        postFirebaseUserInfo(true);
+    }
+//    @Override
+//    public void onConfigurationChanged(Configuration newConfig){
+//        super.onConfigurationChanged(newConfig);
+//        String save = info.getText().toString();
+//        setContentView(R.layout.activity_clicker);
+//        info = (TextView)findViewById(R.id.info);
+//        info.setText(save);
+//    }
 
     private void AfterDataLoad() {
         // earn money per time
@@ -125,12 +152,38 @@ public class ClickerActivity extends AppCompatActivity {
             }
         });
 
-        View touch_area = findViewById(R.id.view);
-        touch_area.setOnTouchListener(new View.OnTouchListener(){
+        TouchArea.setOnTouchListener(new View.OnTouchListener(){
             @Override
             public boolean onTouch(View view, MotionEvent motionEvent){
+                switch (motionEvent.getAction()) {
+                    //Down이 발생한 경우
+                    case MotionEvent.ACTION_DOWN :
+                        x = motionEvent.getX();
+                        y = motionEvent.getY();
+
+                        //터치 한 곳에 이미지를 표현하기 위해 동적으로 ImageView 생성
+                        img = new ImageView(getApplicationContext());
+                        img.setImageResource(R.drawable.twinkle);
+
+                        //이미지가 저장될 곳의 x,y좌표를 표현
+                        img.setX(x-40);
+                        img.setY(y+180);
+                        //최상단 릴레이티브 레이아웃에 이미지를 Add
+                        container.addView(img);
+
+                        fadeOutAndHIdeImage(img);
+                        break;
+
+                    //Up이 발생한 경우
+                    case MotionEvent.ACTION_UP :
+
+                        break;
+
+                }
+
+                //false를 반환하여 뷰 내에 재정의한 onTouchEvent 메소드로 이벤트를 전달한다
                 detector.onTouchEvent(motionEvent);
-                return true;
+                return false;
             }
         });
 
@@ -202,6 +255,31 @@ public class ClickerActivity extends AppCompatActivity {
 //        }
 //    }
 
+    public void fadeOutAndHIdeImage(final ImageView img){
+        Animation fadeOut = new AlphaAnimation(1, 0);
+        fadeOut.setInterpolator(new AccelerateDecelerateInterpolator());
+        fadeOut.setDuration(1000);
+
+        fadeOut.setAnimationListener(new Animation.AnimationListener() {
+            @Override
+            public void onAnimationStart(Animation animation) {
+
+            }
+
+            @Override
+            public void onAnimationEnd(Animation animation) {
+                img.setVisibility(View.GONE);
+            }
+
+            @Override
+            public void onAnimationRepeat(Animation animation) {
+
+            }
+        });
+
+        img.startAnimation(fadeOut);
+    }
+
     public class MyAsyncTask extends AsyncTask<Integer, Integer, Integer> {
 
         @Override
@@ -246,11 +324,8 @@ public class ClickerActivity extends AppCompatActivity {
 
     public void postFirebaseUserInfo(boolean add){
         Map<String, Object> childUpdates = new HashMap<>();
-        Map<String, Object> postValues = null;
-        if(add){
-            postValues = user.toMap();
-        }
-        childUpdates.put("/UserInfo/"+userName, postValues);
+        childUpdates.put("/UserInfo/"+userName+"/rank", user.rank);
+        childUpdates.put("/UserInfo/"+userName+"/now_money", user.now_money);
         mPostReference.updateChildren(childUpdates);
     }
 }

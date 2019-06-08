@@ -81,7 +81,7 @@
 
     <TextView
         android:id="@+id/info"
-        android:layout_width="wrap_content"
+        android:layout_width="395dp"
         android:layout_height="70dp"
         android:layout_alignParentTop="true"
         android:layout_marginStart="11dp"
@@ -95,37 +95,37 @@
 
     <edu.skku.team10.CustomView
         android:id="@+id/customview"
-        android:layout_width="match_parent"
-        android:layout_height="614dp"
+        android:layout_width="wrap_content"
+        android:layout_height="300dp"
         android:layout_below="@id/info"
         android:layout_marginStart="11dp"
         android:layout_marginLeft="11dp"
         android:layout_marginEnd="11dp"
         android:layout_marginRight="11dp"
-        android:layout_marginBottom="120dp"
         android:background="#FFFFFF" />
 
     <Button
         android:id="@+id/upgrade"
-        android:layout_width="match_parent"
-        android:layout_height="100dp"
-        android:layout_alignParentBottom="true"
+        android:layout_width="150dp"
+        android:layout_height="70dp"
+        android:layout_alignParentRight="true"
         android:layout_marginStart="11dp"
         android:layout_marginLeft="11dp"
+        android:layout_marginTop="16dp"
         android:layout_marginEnd="11dp"
-        android:layout_marginRight="11dp"
+        android:layout_marginRight="13dp"
         android:layout_marginBottom="10dp"
         android:text="진급한다!" />
 
     <Button
         android:id="@+id/GotoShop"
-        android:layout_alignParentEnd="true"
-        android:layout_alignParentRight="true"
-        android:layout_width="130dp"
+        android:layout_width="150dp"
         android:layout_height="70dp"
+        android:layout_alignParentTop="true"
         android:layout_marginTop="16dp"
         android:layout_marginEnd="11dp"
-        android:layout_marginRight="15dp"
+        android:layout_marginRight="0dp"
         android:layout_marginBottom="10dp"
+        android:layout_toRightOf="@id/info"
         android:text="SHOP" />
 </RelativeLayout>

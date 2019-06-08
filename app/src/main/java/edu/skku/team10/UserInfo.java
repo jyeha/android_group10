@@ -1,11 +1,12 @@
 package edu.skku.team10;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class UserInfo {
+public class UserInfo implements Serializable {
     public String rank_name;
     public int need_money;
     public int touch;

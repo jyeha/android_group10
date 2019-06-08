@@ -12,7 +12,8 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".Store"></activity>
+        <activity android:name=".PopupActivity"></activity>
+        <activity android:name=".Store"/>
         <activity android:name=".Sign_up" />
         <activity android:name=".ClickerActivity" />
         <activity android:name=".GroundActivity" />

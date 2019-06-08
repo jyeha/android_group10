@@ -30,6 +30,7 @@ import java.util.Map;
 public class Store extends AppCompatActivity {
 
     private DatabaseReference mPostReference;
+
     ListView listView;
     String username;
     TextView money;
