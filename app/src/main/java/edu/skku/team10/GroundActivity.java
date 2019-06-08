@@ -6,7 +6,10 @@ import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
+import android.graphics.Matrix;
 import android.graphics.Paint;
+import android.graphics.PointF;
+import android.graphics.drawable.Drawable;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
@@ -18,9 +21,22 @@ import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.AttributeSet;
 import android.util.Log;
+import android.view.Gravity;
+import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
+import android.view.ViewGroup;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
+import android.widget.BaseAdapter;
 import android.widget.Button;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.ListView;
+import android.widget.PopupWindow;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.firebase.auth.FirebaseAuth;
@@ -34,7 +50,6 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonParser;
-import com.ortiz.touchview.TouchImageView;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -54,9 +69,10 @@ public class GroundActivity extends AppCompatActivity {
     double lat, lon;
     OpenWeatherMapJSON parsedData;
     int groundImgID;
+    Bitmap background;
 
     List<CatInfo> catInfos;
-    List<FurnitureInfo> furnitureInfos;
+    ArrayList<FurnitureInfo> furnitureInfos;
     List<ObjectOnGround> onGround;
 
     String userName;
@@ -72,6 +88,7 @@ public class GroundActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_ground);
+        getSupportActionBar().hide();
 
         //get Nickname
         userName = getIntent().getStringExtra("my_name");
@@ -145,6 +162,29 @@ public class GroundActivity extends AppCompatActivity {
         }
 
         //something calculating
+        touchImageView.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View v, MotionEvent ev) {
+                if(ev.getAction()!=MotionEvent.ACTION_DOWN) return false;
+                PointF bitmapPoint = touchImageView.transformCoordTouchToBitmap(ev.getX(), ev.getY(), true);
+                PointF normalizedBitmapPoint = new PointF(bitmapPoint.x / background.getWidth()
+                        , bitmapPoint.y / background.getHeight());
+                Log.d("bitmap point", bitmapPoint.x + ", " + bitmapPoint.y);
+                Log.d("touched position", normalizedBitmapPoint.x + ", " + normalizedBitmapPoint.y);
+                for(ObjectOnGround o : onGround) {
+                    int idx = o.index;
+                    float normx = normalizedBitmapPoint.x;
+                    float normy = normalizedBitmapPoint.y;
+                    if((normx - o.position.x)*(normx - o.position.x) + (normy - o.position.y)*(normy - o.position.y) <= o.radius*o.radius){
+                        Log.d("white circle touched", Integer.toString(o.index));
+                        //popup
+                        createPopupWindow(idx);
+                        return true;
+                    }
+                }
+                return false;
+            }
+        });
 
         //get resource ids of furniture
         updateTouchImageView();
@@ -316,7 +356,7 @@ public class GroundActivity extends AppCompatActivity {
         touchImageView.setMinZoom(min_zoom);
 
         //create canvas, set background
-        Bitmap background = BitmapFactory.decodeResource(getResources(),groundImgID);
+        background = BitmapFactory.decodeResource(getResources(),groundImgID);
         background = resizeBitmap(background);
         Canvas canvas = new Canvas(background);
 
@@ -328,13 +368,14 @@ public class GroundActivity extends AppCompatActivity {
             int drawPosX = (int)(background.getWidth() * o.position.x);
             int drawPosY = (int)(background.getHeight() * o.position.y);
 
-            if(o.furnitureID == -1) {
+            int drawFurnID = userInfo.groundFurn.get(o.index);
+            if(drawFurnID == -1) {
                 paint.setAlpha(127);
                 canvas.drawCircle(drawPosX, drawPosY, background.getHeight() * o.radius, paint);
             }
             else {
                 //draw furniture
-                FurnitureInfo f = furnitureInfos.get(o.furnitureID);
+                FurnitureInfo f = furnitureInfos.get(drawFurnID);
                 Bitmap catBitmap = BitmapFactory.decodeResource(getResources(), f.furnitureImgID);
                 int newFurnX = (int)(f.scaleX*background.getWidth());
                 int newFurnY = (int)(f.scaleY*background.getHeight());
@@ -356,6 +397,30 @@ public class GroundActivity extends AppCompatActivity {
         }
 
         touchImageView.setImageBitmap(background);
+    }
+
+    private void createPopupWindow(int idx) {
+        Intent intent = new Intent(GroundActivity.this, PopupActivity.class);
+        intent.putExtra("ObjectOnGroundID", idx);
+        intent.putExtra("user_info", userInfo);
+        intent.putExtra("furn_info", furnitureInfos);
+        startActivityForResult(intent, 1);
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if(requestCode==1){
+            if(resultCode==RESULT_OK){
+                Integer idx = data.getIntExtra("ObjectOnGroundID", -1);
+                Integer furnID = data.getIntExtra("furnID", -2);
+                Log.d("return_idx", Integer.toString(idx));
+                Log.d("furn_ID", Integer.toString(furnID));
+                if(idx==-1 || furnID==-2) return;
+                userInfo.groundFurn.set(idx, furnID);
+                postFirebaseDatabase(true);
+                updateTouchImageView();
+            }
+        }
     }
 
     private Bitmap resizeBitmap(Bitmap bitmap){

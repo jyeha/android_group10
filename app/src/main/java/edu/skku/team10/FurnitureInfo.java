@@ -1,6 +1,8 @@
 package edu.skku.team10;
 
-public class FurnitureInfo {
+import java.io.Serializable;
+
+public class FurnitureInfo implements Serializable {
     public int furnitureID;
     public int furnitureImgID;
     public String furnitureName;
@@ -8,6 +10,8 @@ public class FurnitureInfo {
     public int furniturePrice;
     public float scaleX;
     public float scaleY;
+    public boolean isOnGround;
+    public String Description;
 
     public FurnitureInfo(){}
 
