@@ -33,7 +33,9 @@ import com.google.gson.JsonParser;
 import com.ortiz.touchview.TouchImageView;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import okhttp3.HttpUrl;
 import okhttp3.OkHttpClient;
@@ -53,9 +55,11 @@ public class GroundActivity extends AppCompatActivity {
     List<CatInfo> catInfos;
     List<FurnitureInfo> furnitureInfos;
     List<ObjectOnGround> onGround;
-    int waitingProcesses = 3;
 
+    String userName;
+    UserInfo userInfo;
 
+    int waitingProcesses = 4;
     public interface Callback{
         void success(String msg);
         void fail();
@@ -66,8 +70,9 @@ public class GroundActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_ground);
 
-        firebaseAuth = FirebaseAuth.getInstance();
-        String email = firebaseAuth.getCurrentUser().getEmail();
+        //get Nickname
+        userName = getIntent().getStringExtra("my_name");
+        Log.d("userName", userName);
 
         //request permission
         if ( Build.VERSION.SDK_INT >= 23 &&
@@ -218,10 +223,12 @@ public class GroundActivity extends AppCompatActivity {
         mPostReference.child("GroundInfo/FurniturePos").addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                int ind = 0;
                 Log.d("onDataChange", "Data is Updated");
                 for (DataSnapshot postSnapshot : dataSnapshot.getChildren()) {
                     List<Float> get = postSnapshot.getValue(new GenericTypeIndicator<List<Float>>() {});
-                    onGround.add(new ObjectOnGround(get.get(0), get.get(1)));
+                    onGround.add(new ObjectOnGround(get.get(0), get.get(1), ind));
+                    ++ind;
                     Log.d("posi", get.get(0).toString() + get.get(1).toString());
                 }
                 callback.success("funi-pos");
@@ -232,6 +239,35 @@ public class GroundActivity extends AppCompatActivity {
                 callback.fail();
             }
         });
+        mPostReference.child("UserInfo/"+userName).addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+
+                //List<Float> get = postSnapshot.getValue(new GenericTypeIndicator<List<Float>>() {});
+                UserInfo get = dataSnapshot.getValue(UserInfo.class);
+                userInfo = get;
+                if(get == null) Log.d("userdata","failed");
+                Log.d("groundFurn", get.groundFurn.toString());
+                Log.d("hasFurniture", get.hasFurniture.toString());
+
+                callback.success("userinfo");
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+                callback.fail();
+            }
+        });
+    }
+
+    public void postFirebaseDatabase(boolean add){
+        Map<String, Object> childUpdates = new HashMap<>();
+        Map<String, Object> postValues = null;
+        if(add){
+            postValues = userInfo.toMap();
+        }
+        childUpdates.put("/UserInfo/" + userName, postValues);
+        mPostReference.updateChildren(childUpdates);
     }
 
     private void changeGroundImg(){
@@ -271,6 +307,13 @@ public class GroundActivity extends AppCompatActivity {
         for(ObjectOnGround o : onGround) {
             int drawPosX = (int)(background.getWidth() * o.position.x);
             int drawPosY = (int)(background.getHeight() * o.position.y);
+
+            //temp code, delete later
+            o.furnitureID = 0;
+            userInfo.groundFurn.set(o.index, o.furnitureID);
+            Log.d("before_update", userInfo.groundFurn.toString());
+            postFirebaseDatabase(true);
+
             if(o.furnitureID == -1) {
                 paint.setAlpha(127);
                 canvas.drawCircle(drawPosX, drawPosY, background.getHeight() * o.radius, paint);

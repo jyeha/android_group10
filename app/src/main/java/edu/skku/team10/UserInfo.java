@@ -22,20 +22,40 @@ public class UserInfo {
     public UserInfo(){
         groundFurn = new ArrayList<>();
         hasFurniture = new ArrayList<>();
+        for(int i=0; i<10; ++i) groundFurn.add(-1);
+        for(int i=0; i<10; ++i) hasFurniture.add(false);
     }
 
     public UserInfo(int num){
         if(num==1){
             rank=1;
             rank_name="알바";
+            now_money = 0;
             need_money=3000;
             touch=100;
             auto=500;
             can_promote=true;
-
-            groundFurn = new ArrayList<>();
-            hasFurniture = new ArrayList<>();
         }
+        else if(num==2){
+            rank=2;
+            rank_name="인턴";
+            need_money=10000;
+            touch=500;
+            auto=2000;
+            can_promote=true;
+        }
+        else if(num==3){
+            rank=3;
+            rank_name="정직원";
+            need_money=0;
+            touch=1000;
+            auto=5000;
+            can_promote=false;
+        }
+        groundFurn = new ArrayList<>();
+        hasFurniture = new ArrayList<>();
+        for(int i=0; i<10; ++i) groundFurn.add(-1);
+        for(int i=0; i<10; ++i) hasFurniture.add(false);
     }
 
     public void promotion(int num){
@@ -58,12 +78,12 @@ public class UserInfo {
         return;
     }
 
-    public Map<String, Object> toMap(){
+    public Map<String, Object> toMap() {
         HashMap<String, Object> result = new HashMap<>();
+        result.put("rank", rank);
         result.put("now_money", now_money);
         result.put("groundFurn", groundFurn);
         result.put("hasFurniture", hasFurniture);
-        result.put("rank", rank);
         return result;
     }
 }

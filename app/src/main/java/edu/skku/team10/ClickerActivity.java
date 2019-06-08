@@ -1,5 +1,6 @@
 package edu.skku.team10;
 
+import android.content.Intent;
 import android.os.AsyncTask;
 import android.renderscript.Sampler;
 import android.support.annotation.NonNull;
@@ -26,10 +27,16 @@ public class ClickerActivity extends AppCompatActivity {
     private DatabaseReference mPostReference;
     public UserInfo user;
     public String userName;
-    TextView info;
-    Button promote;
-    GestureDetector detector;
     public int check_long=0;
+    Intent ToShop;
+    TextView info;
+    Button promote, shop;
+    GestureDetector detector;
+
+    public interface Callback{
+        void success(String msg);
+        void fail();
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -38,44 +45,41 @@ public class ClickerActivity extends AppCompatActivity {
 
         info = (TextView)findViewById(R.id.info);
         promote = (Button)findViewById(R.id.upgrade);
+        shop = (Button)findViewById(R.id.GotoShop);
+
+        ToShop = new Intent(ClickerActivity.this, store.class);
 
         mPostReference = FirebaseDatabase.getInstance().getReference();
-        userName = "TestAccount"; //getIntent().getStringExtra("my_name");
-
-        // Get UserInfo from Firebase
-        mPostReference.child("UserInfo/"+userName).addValueEventListener(new ValueEventListener() {
+        //userName = "TestAccount";
+        userName = getIntent().getStringExtra("my_name");
+        getFirebaseDatabaseInfo(new Callback() {
             @Override
-            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-
-                //List<Float> get = postSnapshot.getValue(new GenericTypeIndicator<List<Float>>() {});
-                UserInfo get = dataSnapshot.getValue(UserInfo.class);
-                user = get;
-                if(get == null) Log.d("userdata","failed");
-                Log.d("groundFurn", get.groundFurn.toString());
-                Log.d("hasFurniture", get.hasFurniture.toString());
-
-                //callback.success("userinfo");
+            public void success(String msg) {
+                info.setText("직급 : "+ user.rank_name+"\n"+
+                "현재 소지 : " + user.now_money+ "\n" +
+                "다음 진급까지 남은 돈 : "+user.now_need_money);
+                AfterDataLoad();
             }
 
             @Override
-            public void onCancelled(@NonNull DatabaseError databaseError) {
-                //callback.fail();
+            public void fail() {
+
             }
         });
 
+        shop.setOnClickListener(new View.OnClickListener(){
+            @Override
+            public void onClick(View v){
+                ToShop.putExtra("my_name", "TestAccount");
+                startActivity(ToShop);
+            }
+        });
+    }
+
+    private void AfterDataLoad() {
         // earn money per time
         MyAsyncTask EarnMoneyPerTime = new MyAsyncTask();
         EarnMoneyPerTime.execute();
-
-        // update firebase per time
-        UpdateAsyncTask FirebaseUpdateMoney = new UpdateAsyncTask();
-        FirebaseUpdateMoney.execute();
-
-
-//        // initial UI setting
-//        info.setText("직급 : "+ user.rank_name+"\n"+
-//                "현재 소지 : " + user.now_money+ "\n" +
-//                "다음 진급까지 남은 돈 : "+user.now_need_money);
 
         // Earn money for each touch
         detector = new GestureDetector(this, new GestureDetector.OnGestureListener() {
@@ -142,38 +146,61 @@ public class ClickerActivity extends AppCompatActivity {
                     info.setText("직급 : "+ user.rank_name+"\n"+
                             "현재 소지 : " + user.now_money+ "\n" +
                             "다음 진급까지 남은 돈 : "+user.now_need_money);
+                    postFirebaseUserInfo(true);
                 }
             }
         });
     }
 
-    public class UpdateAsyncTask extends AsyncTask<Integer, Integer, Integer>{
-        @Override
-        protected void onPreExecute(){
-            super.onPreExecute();
-        }
-        @Override
-        protected void onProgressUpdate(Integer... values){
-            super.onProgressUpdate(values);
-        }
-        @Override
-        protected Integer doInBackground(Integer... params){
+    private void getFirebaseDatabaseInfo(final Callback callback) {
+        // Get UserInfo from Firebase
+        mPostReference.child("UserInfo/"+userName).addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                UserInfo get = dataSnapshot.getValue(UserInfo.class);
+                user = new UserInfo(get.rank);
+                user.now_money=get.now_money;
+                if(get == null) Log.d("userdata","failed");
+                Log.d("groundFurn", get.groundFurn.toString());
+                Log.d("hasFurniture", get.hasFurniture.toString());
 
-            // Firebase MoneyInfo update
-            while(true) {
-                try {
-                    Thread.sleep(60000);
-                    postFirebaseUserInfo(true);
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
+                callback.success("");
             }
-        }
-        @Override
-        protected void onPostExecute(Integer result){
-            super.onPostExecute(result);
-        }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+                callback.fail();
+            }
+        });
     }
+
+//    public class UpdateAsyncTask extends AsyncTask<Integer, Integer, Integer>{
+//        @Override
+//        protected void onPreExecute(){
+//            super.onPreExecute();
+//        }
+//        @Override
+//        protected void onProgressUpdate(Integer... values){
+//            super.onProgressUpdate(values);
+//        }
+//        @Override
+//        protected Integer doInBackground(Integer... params){
+//
+//            // Firebase MoneyInfo update
+//            while(true) {
+//                try {
+//                    Thread.sleep(60000);
+//                    postFirebaseUserInfo(true);
+//                } catch (InterruptedException e) {
+//                    e.printStackTrace();
+//                }
+//            }
+//        }
+//        @Override
+//        protected void onPostExecute(Integer result){
+//            super.onPostExecute(result);
+//        }
+//    }
 
     public class MyAsyncTask extends AsyncTask<Integer, Integer, Integer> {
 
@@ -191,10 +218,14 @@ public class ClickerActivity extends AppCompatActivity {
         }
         @Override
         protected Integer doInBackground(Integer... params){
-
+            int cnt=0;
             // 현재 소지금액 update
             while(true) {
                 try {
+                    cnt++;
+                    if(cnt%12==0){
+                        postFirebaseUserInfo(true);
+                    }
                     Thread.sleep(5000);
                     user.now_money += user.auto;
                     user.now_need_money=user.need_money-user.now_money;
@@ -216,7 +247,6 @@ public class ClickerActivity extends AppCompatActivity {
     public void postFirebaseUserInfo(boolean add){
         Map<String, Object> childUpdates = new HashMap<>();
         Map<String, Object> postValues = null;
-
         if(add){
             postValues = user.toMap();
         }
