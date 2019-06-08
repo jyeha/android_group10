@@ -12,6 +12,8 @@ public class CatInfo {
     public List<Float> appearTime;
     public List<Float> lifeTime;
     public List<Integer> favoriteFurniture;
+    public float scaleX;
+    public float scaleY;
 
     public CatInfo(){}
 }
