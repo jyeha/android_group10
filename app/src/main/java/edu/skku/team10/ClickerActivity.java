@@ -63,6 +63,7 @@ public class ClickerActivity extends AppCompatActivity {
         ToShop = new Intent(ClickerActivity.this, Store.class);
 
         mPostReference = FirebaseDatabase.getInstance().getReference();
+
         userName = getIntent().getStringExtra("my_name");
         getFirebaseDatabaseInfo(new Callback() {
             @Override
