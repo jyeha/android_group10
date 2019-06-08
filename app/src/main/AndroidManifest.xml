@@ -16,7 +16,8 @@
         <activity android:name=".Store" />
         <activity android:name=".Sign_up" />
         <activity android:name=".ClickerActivity" />
-        <activity android:name=".GroundActivity" />
+        <activity android:name=".GroundActivity"
+            android:configChanges="orientation|screenSize"/>
         <activity android:name=".MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
