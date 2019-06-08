@@ -75,7 +75,7 @@ public class MainActivity extends AppCompatActivity {
                             if(task.isSuccessful()){
                                 //Log.d("확인", "3");
                                 intent = new Intent(MainActivity.this, GroundActivity.class);
-                                intent.putExtra("my_email", T_email);
+                                //intent.putExtra("my_email", T_email);
                                 Toast.makeText(MainActivity.this, "로그인 되었습니다.", Toast.LENGTH_SHORT).show();
                                 startActivity(intent);
                                 finish();

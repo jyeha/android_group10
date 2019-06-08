@@ -16,9 +16,11 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.DatabaseReference;
 
 public class Sign_up extends AppCompatActivity {
 
+    private DatabaseReference mDatabase;
     FirebaseAuth firebaseAuth;
     EditText email, pw;
     Button signup;
