@@ -19,6 +19,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
 
+import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -41,6 +42,7 @@ import okhttp3.Response;
 
 public class GroundActivity extends AppCompatActivity {
     private DatabaseReference mPostReference;
+    private FirebaseAuth firebaseAuth;
     TouchImageView touchImageView;
     float min_zoom;
 
@@ -53,6 +55,7 @@ public class GroundActivity extends AppCompatActivity {
     List<ObjectOnGround> onGround;
     int waitingProcesses = 3;
 
+
     public interface Callback{
         void success(String msg);
         void fail();
@@ -62,6 +65,9 @@ public class GroundActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_ground);
+
+        firebaseAuth = FirebaseAuth.getInstance();
+        String email = firebaseAuth.getCurrentUser().getEmail();
 
         //request permission
         if ( Build.VERSION.SDK_INT >= 23 &&
