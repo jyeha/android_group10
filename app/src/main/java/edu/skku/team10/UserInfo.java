@@ -1,11 +1,28 @@
 package edu.skku.team10;
 
-public class user_info extends base_info {
-    String user_name;
+import java.util.ArrayList;
+import java.util.List;
 
-    public user_info(){}
+public class UserInfo {
+    public String rank_name;
+    public int need_money;
+    public int touch;
+    public int auto;
+    public boolean can_promote;
+    public int rank;
 
-    public user_info(int num){
+    public int now_money;
+    public int now_need_money;
+
+    public List<Integer> groundFurn;
+    public List<Boolean> hasFurniture;
+
+    public UserInfo(){
+        groundFurn = new ArrayList<>();
+        hasFurniture = new ArrayList<>();
+    }
+
+    public UserInfo(int num){
         if(num==1){
             rank=1;
             rank_name="알바";
@@ -13,6 +30,9 @@ public class user_info extends base_info {
             touch=100;
             auto=500;
             can_promote=true;
+
+            groundFurn = new ArrayList<>();
+            hasFurniture = new ArrayList<>();
         }
     }
 

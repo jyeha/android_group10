@@ -11,7 +11,7 @@ import android.widget.TextView;
 
 public class ClickerActivity extends AppCompatActivity {
 
-    public user_info user=new user_info(1);
+    public UserInfo user=new UserInfo(1);
     TextView info;
     Button promote;
     GestureDetector detector;
