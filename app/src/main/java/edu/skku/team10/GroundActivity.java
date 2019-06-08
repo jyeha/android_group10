@@ -322,11 +322,7 @@ public class GroundActivity extends AppCompatActivity {
 
     public void postFirebaseDatabase(boolean add){
         Map<String, Object> childUpdates = new HashMap<>();
-        Map<String, Object> postValues = null;
-        if(add){
-            postValues = userInfo.toMap();
-        }
-        childUpdates.put("/UserInfo/" + userName, postValues);
+        childUpdates.put("/UserInfo/" + userName + "/groundFurn", userInfo.groundFurn);
         mPostReference.updateChildren(childUpdates);
     }
 
