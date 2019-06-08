@@ -247,11 +247,11 @@ public class GroundActivity extends AppCompatActivity {
 
     private void updateTouchImageView(){
         //set min_zoom
-//        Log.d("width,height", (touchImageView.getWidth()) + ", " + (touchImageView.getHeight()));
-//        min_zoom = (float)touchImageView.getWidth() / (float)touchImageView.getHeight();
-//        min_zoom = (min_zoom<1?(1/min_zoom):min_zoom);
-//        Log.d("min_zoom", Float.toString(min_zoom));
-//        touchImageView.setMinZoom(min_zoom);
+        Log.d("width,height", (touchImageView.getWidth()) + ", " + (touchImageView.getHeight()));
+        min_zoom = (float)touchImageView.getWidth() / (float)touchImageView.getHeight();
+        min_zoom = (min_zoom<1?(1/min_zoom):min_zoom);
+        Log.d("min_zoom", Float.toString(min_zoom));
+        touchImageView.setMinZoom(min_zoom);
 
         //create canvas, set background
         Bitmap background = BitmapFactory.decodeResource(getResources(),groundImgID);
