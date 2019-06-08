@@ -28,6 +28,11 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        // temp code, erase later
+        intent = new Intent(MainActivity.this, GroundActivity.class);
+        intent.putExtra("my_name", "TestAccount");
+        startActivity(intent);
+        return;/*
 
         firebaseAuth = FirebaseAuth.getInstance();
 
@@ -36,18 +41,18 @@ public class MainActivity extends AppCompatActivity {
         email = (EditText)findViewById(R.id.editText);
         pw = (EditText)findViewById(R.id.editText2);
 
-        /*logout = (Button)findViewById(R.id.button4);
-        firebaseAuth = FirebaseAuth.getInstance();
-        Toast.makeText(GroundActivity.this, firebaseAuth.getCurrentUser().getEmail(), Toast.LENGTH_LONG).show();
-
-        logout.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                firebaseAuth.signOut();
-                intent = new Intent(GroundActivity.this, MainActivity.class);
-                startActivity(intent);
-            }
-        });*/
+//        logout = (Button)findViewById(R.id.button4);
+//        firebaseAuth = FirebaseAuth.getInstance();
+//        Toast.makeText(GroundActivity.this, firebaseAuth.getCurrentUser().getEmail(), Toast.LENGTH_LONG).show();
+//
+//        logout.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                firebaseAuth.signOut();
+//                intent = new Intent(GroundActivity.this, MainActivity.class);
+//                startActivity(intent);
+//            }
+//        });
 
         if(firebaseAuth.getCurrentUser() != null) {
             intent = new Intent(MainActivity.this, GroundActivity.class);
@@ -96,6 +101,6 @@ public class MainActivity extends AppCompatActivity {
                 intent = new Intent(MainActivity.this, Sign_up.class);
                 startActivity(intent);
             }
-        });
+        });*/
     }
 }

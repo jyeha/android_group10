@@ -6,6 +6,7 @@ public class ObjectOnGround {
     public boolean onlyFood;
     public int furnitureID; // -1 is none
     public int catID; // -1 is none
+    public int index;
 
     public class Position{
         public float x;
@@ -27,6 +28,17 @@ public class ObjectOnGround {
         furnitureID = -1;
         catID = -1;
         onlyFood = false;
+    }
+
+    public ObjectOnGround(float x, float y, int ind) {
+        position = new Position();
+        position.x = x;
+        position.y = y;
+        radius = (float)0.05;
+        furnitureID = -1;
+        catID = -1;
+        onlyFood = false;
+        index = ind;
     }
 
     public ObjectOnGround(int furnitureID, boolean onlyFood, float x, float y, float radius) {
