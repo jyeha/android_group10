@@ -1,6 +1,7 @@
 package edu.skku.team10;
 
 import android.content.Context;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -18,6 +19,8 @@ import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.View;
+import android.widget.Button;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
@@ -119,6 +122,17 @@ public class GroundActivity extends AppCompatActivity {
             }
             @Override
             public void fail() {}
+        });
+
+        //connect button pressed event, goto clicker activity
+        Button gotoClicker = findViewById(R.id.gotoClicker);
+        gotoClicker.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(GroundActivity.this, ClickerActivity.class);
+                intent.putExtra("my_name", userName);
+                startActivity(intent);
+            }
         });
     }
     void databaseLoaded(){

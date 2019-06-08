@@ -10,5 +10,24 @@
         android:id="@+id/madang"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:src="@drawable/sunny"/>
+        android:src="@drawable/sunny" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:gravity="right|end"
+        android:orientation="vertical">
+
+        <Button
+            android:id="@+id/gotoClicker"
+            android:layout_width="128dp"
+            android:layout_height="64dp"
+            android:layout_marginEnd="0dp"
+            android:layout_marginRight="0dp"
+            android:layout_marginBottom="683dp"
+            android:text="돈 벌러 가기"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+    </LinearLayout>
+
 </android.support.constraint.ConstraintLayout>
