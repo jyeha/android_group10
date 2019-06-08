@@ -130,6 +130,7 @@ public class GroundActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(GroundActivity.this, ClickerActivity.class);
+                intent.putExtra("my_name", userName);
                 startActivity(intent);
             }
         });
