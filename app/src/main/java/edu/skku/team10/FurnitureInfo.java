@@ -6,6 +6,8 @@ public class FurnitureInfo {
     public String furnitureName;
     public String ImgFileName;
     public int furniturePrice;
+    public float scaleX;
+    public float scaleY;
 
     public FurnitureInfo(){}
 
