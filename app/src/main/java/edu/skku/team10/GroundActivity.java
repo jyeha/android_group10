@@ -19,6 +19,8 @@ import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.View;
+import android.widget.Button;
 import android.widget.Toast;
 
 import com.google.firebase.auth.FirebaseAuth;
@@ -121,12 +123,29 @@ public class GroundActivity extends AppCompatActivity {
             @Override
             public void fail() {}
         });
+
+        //connect button pressed event, goto clicker activity
+        Button gotoClicker = findViewById(R.id.gotoClicker);
+        gotoClicker.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(GroundActivity.this, ClickerActivity.class);
+                intent.putExtra("my_name", userName);
+                startActivity(intent);
+            }
+        });
     }
     void databaseLoaded(){
         //get resource ids of cats
         for(CatInfo c : catInfos) {
             c.catImgID = getResources().getIdentifier(c.ImgFileName, "drawable", getPackageName());
         }
+        for(FurnitureInfo f : furnitureInfos) {
+            f.furnitureImgID = getResources().getIdentifier(f.ImgFileName, "drawable", getPackageName());
+        }
+
+        //something calculating
+
         //get resource ids of furniture
         updateTouchImageView();
     }
@@ -309,26 +328,27 @@ public class GroundActivity extends AppCompatActivity {
             int drawPosX = (int)(background.getWidth() * o.position.x);
             int drawPosY = (int)(background.getHeight() * o.position.y);
 
-            //temp code, delete later
-            o.furnitureID = 0;
-            userInfo.groundFurn.set(o.index, o.furnitureID);
-            Log.d("before_update", userInfo.groundFurn.toString());
-            postFirebaseDatabase(true);
-
             if(o.furnitureID == -1) {
                 paint.setAlpha(127);
                 canvas.drawCircle(drawPosX, drawPosY, background.getHeight() * o.radius, paint);
             }
             else {
                 //draw furniture
+                FurnitureInfo f = furnitureInfos.get(o.furnitureID);
+                Bitmap catBitmap = BitmapFactory.decodeResource(getResources(), f.furnitureImgID);
+                int newFurnX = (int)(f.scaleX*background.getWidth());
+                int newFurnY = (int)(f.scaleY*background.getHeight());
+                catBitmap = Bitmap.createScaledBitmap(catBitmap, newFurnX, newFurnY, false);
+                paint.setAlpha(255);
+                canvas.drawBitmap(catBitmap, drawPosX - (newFurnX/2), drawPosY - (newFurnY/2), paint);
             }
 
-            o.catID = 0;//temporary changed, delete later
             if(o.catID != -1){
                 //draw cat
-                Bitmap catBitmap = BitmapFactory.decodeResource(getResources(),catInfos.get(o.catID).catImgID);
-                int newCatX = (int)(0.2*background.getWidth());
-                int newCatY = (int)(0.2*background.getHeight());
+                CatInfo c = catInfos.get(o.catID);
+                Bitmap catBitmap = BitmapFactory.decodeResource(getResources(), c.catImgID);
+                int newCatX = (int)(c.scaleX*background.getWidth());
+                int newCatY = (int)(c.scaleY*background.getHeight());
                 catBitmap = Bitmap.createScaledBitmap(catBitmap, newCatX, newCatY, false);
                 paint.setAlpha(255);
                 canvas.drawBitmap(catBitmap, drawPosX - (newCatX/2), drawPosY - (newCatY/2), paint);
