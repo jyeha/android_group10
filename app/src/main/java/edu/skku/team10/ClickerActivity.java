@@ -47,7 +47,7 @@ public class ClickerActivity extends AppCompatActivity {
         promote = (Button)findViewById(R.id.upgrade);
         shop = (Button)findViewById(R.id.GotoShop);
 
-        ToShop = new Intent(ClickerActivity.this, store.class);
+        //ToShop = new Intent(ClickerActivity.this, store.class);
 
         mPostReference = FirebaseDatabase.getInstance().getReference();
         //userName = "TestAccount";
@@ -67,13 +67,13 @@ public class ClickerActivity extends AppCompatActivity {
             }
         });
 
-        shop.setOnClickListener(new View.OnClickListener(){
+        /*shop.setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View v){
                 ToShop.putExtra("my_name", "TestAccount");
                 startActivity(ToShop);
             }
-        });
+        });*/
     }
 
     private void AfterDataLoad() {
