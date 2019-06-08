@@ -1,6 +1,7 @@
 package edu.skku.team10;
 
 import android.content.Intent;
+import android.content.res.Configuration;
 import android.os.AsyncTask;
 import android.renderscript.Sampler;
 import android.support.annotation.NonNull;
@@ -79,16 +80,28 @@ public class ClickerActivity extends AppCompatActivity {
             }
         });
 
-
-        /*shop.setOnClickListener(new View.OnClickListener(){
-            @Override
-            public void onClick(View v){
-                ToShop.putExtra("my_name", "TestAccount");
-                startActivity(ToShop);
-            }
-        });*/
-
+//        shop.setOnClickListener(new View.OnClickListener(){
+//            @Override
+//            public void onClick(View v){
+//                ToShop.putExtra("my_name", "TestAccount");
+//                startActivity(ToShop);
+//            }
+//        });
     }
+
+    @Override
+    protected void onSaveInstanceState(Bundle outState){
+        super.onSaveInstanceState(outState);
+        postFirebaseUserInfo(true);
+    }
+//    @Override
+//    public void onConfigurationChanged(Configuration newConfig){
+//        super.onConfigurationChanged(newConfig);
+//        String save = info.getText().toString();
+//        setContentView(R.layout.activity_clicker);
+//        info = (TextView)findViewById(R.id.info);
+//        info.setText(save);
+//    }
 
     private void AfterDataLoad() {
         // earn money per time
@@ -311,11 +324,8 @@ public class ClickerActivity extends AppCompatActivity {
 
     public void postFirebaseUserInfo(boolean add){
         Map<String, Object> childUpdates = new HashMap<>();
-        Map<String, Object> postValues = null;
-        if(add){
-            postValues = user.toMap();
-        }
-        childUpdates.put("/UserInfo/"+userName, postValues);
+        childUpdates.put("/UserInfo/"+userName+"/rank", user.rank);
+        childUpdates.put("/UserInfo/"+userName+"/now_money", user.now_money);
         mPostReference.updateChildren(childUpdates);
     }
 }
