@@ -15,6 +15,14 @@
       },
       "oauth_client": [
         {
+          "client_id": "581386003747-u9ifn2c1ndhbku3q1el8l4jdl387rcq2.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "edu.skku.team10",
+            "certificate_hash": "621ab7d182d988cf0c61edb59fa186616bc64739"
+          }
+        },
+        {
           "client_id": "581386003747-jooid11tmglirg8er19sjj19fuparkgk.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {
