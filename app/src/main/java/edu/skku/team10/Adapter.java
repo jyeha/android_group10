@@ -1,15 +1,17 @@
-package edu.skku.team10;
+/*package edu.skku.team10;
 
 import android.content.Context;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import java.util.ArrayList;
 
-public class Adapter {// extends BaseAdapter {
+public class Adapter extends BaseAdapter {
     LayoutInflater inflater;
     private ArrayList<FurnitureInfo> items;
 
@@ -30,22 +32,28 @@ public class Adapter {// extends BaseAdapter {
         return i;
     }
 
-    /*@Override
+    @Override
     public View getView(int i, View view, ViewGroup viewGroup) {
         if ( view == null ) {
-            view = inflater.inflate(R.layout.item_layout, viewGroup, false);
+            view = inflater.inflate(R.layout.store_list, viewGroup, false);
         }
 
-        MemoItem item = items.get(i);
+        FurnitureInfo item = items.get(i);
 
-        TextView tv1 = (TextView)view.findViewById(R.id.title_tv);
-        TextView tv2 = (TextView)view.findViewById(R.id.owner_tv);
-        TextView tv3 = (TextView)view.findViewById(R.id.contents_tv);
+        ImageView imageView = (ImageView)view.findViewById(R.id.imageView);
+        TextView fur_name = (TextView)view.findViewById(R.id.textView8);
+        TextView fur_price = (TextView)view.findViewById(R.id.textView9);
 
-        tv1.setText(item.getTitle());
-        tv2.setText(item.getOwner());
-        tv3.setText(item.getContent());
+        //imageView.setImageResource(R.drawable.item.ImgFileName);
+        //imageView.setImageResource(item.ImgFileName);
+        Log.d("이미지", String.valueOf(item.furnitureImgID));
+        Log.d("가구이름", String.valueOf(item.furniturePrice));
+        fur_name.setText(item.furnitureName);
+        Log.d("돈", String.valueOf(item.furniturePrice));
+        fur_price.setText(String.valueOf(item.furniturePrice));
+
 
         return view;
-    }*/
+    }
 }
+*/
