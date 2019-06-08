@@ -6,16 +6,16 @@
     android:layout_height="match_parent"
     tools:context=".GroundActivity">
 
-    <com.ortiz.touchview.TouchImageView
-        android:id="@+id/madang"
+    <edu.skku.team10.TouchImageView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:id="@+id/madang"
         android:src="@drawable/sunny" />
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:gravity="right|end"
+        android:gravity="right"
         android:orientation="vertical">
 
         <Button
