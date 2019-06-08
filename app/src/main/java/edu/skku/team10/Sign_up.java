@@ -16,7 +16,10 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.ValueEventListener;
 
 public class Sign_up extends AppCompatActivity {
 
@@ -58,17 +61,22 @@ public class Sign_up extends AppCompatActivity {
                                 //TextView v = (TextView) toast.getView().findViewById(android.R.id.message);
                                 //if( v != null) v.setGravity(Gravity.CENTER);
                                 toast.show();
+                                Push_init();
                                 startActivity(intent);
                                 finish();
                             }
                             else{
                                 //Log.d("확인", "4");
-                                Toast.makeText(Sign_up.this, "email형식이 맞지 않거나\n비밀번호가 6자리 이상이어야 합니다.", Toast.LENGTH_SHORT).show();
+                                Toast.makeText(Sign_up.this, "email형식이 맞지 않거나\n이미 존재하는 email입니다.\n비밀번호는 6자리 이상이어야 합니다.", Toast.LENGTH_SHORT).show();
                             }
                         }
                     });
                 }
             }
         });
+    }
+
+    public void Push_init(){
+    UserInfo get = new UserInfo(1);
     }
 }
