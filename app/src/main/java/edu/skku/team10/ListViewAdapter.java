@@ -12,7 +12,7 @@ import android.widget.TextView;
 import java.util.ArrayList;
 
 public class ListViewAdapter extends BaseAdapter {
-    private ArrayList<FurnListItem> listViewItemList = new ArrayList<>() ;
+    private ArrayList<FurnListItem> listViewItemList = new ArrayList<>();
     public ListViewAdapter(){
 
     }
@@ -34,7 +34,6 @@ public class ListViewAdapter extends BaseAdapter {
 
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
-        final int pos = position;
         final Context context = parent.getContext();
 
         // "listview_item" Layout을 inflate하여 convertView 참조 획득.

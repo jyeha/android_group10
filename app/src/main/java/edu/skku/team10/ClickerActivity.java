@@ -60,7 +60,7 @@ public class ClickerActivity extends AppCompatActivity {
         TouchArea=(CustomView)findViewById(R.id.customview);
         container=(RelativeLayout)findViewById(R.id.RL);
 
-        //ToShop = new Intent(ClickerActivity.this, store.class);
+        ToShop = new Intent(ClickerActivity.this, Store.class);
 
         mPostReference = FirebaseDatabase.getInstance().getReference();
         userName = "TestAccount";
@@ -80,13 +80,13 @@ public class ClickerActivity extends AppCompatActivity {
             }
         });
 
-//        shop.setOnClickListener(new View.OnClickListener(){
-//            @Override
-//            public void onClick(View v){
-//                ToShop.putExtra("my_name", "TestAccount");
-//                startActivity(ToShop);
-//            }
-//        });
+        shop.setOnClickListener(new View.OnClickListener(){
+            @Override
+            public void onClick(View v){
+                ToShop.putExtra("my_name", userName);
+                startActivity(ToShop);
+            }
+        });
     }
 
     @Override
