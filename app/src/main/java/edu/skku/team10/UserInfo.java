@@ -1,7 +1,9 @@
 package edu.skku.team10;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class UserInfo {
     public String rank_name;
@@ -54,5 +56,14 @@ public class UserInfo {
             can_promote=false;
         }
         return;
+    }
+
+    public Map<String, Object> toMap(){
+        HashMap<String, Object> result = new HashMap<>();
+        result.put("now_money", now_money);
+        result.put("groundFurn", groundFurn);
+        result.put("hasFurniture", hasFurniture);
+        result.put("rank", rank);
+        return result;
     }
 }
