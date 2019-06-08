@@ -9,6 +9,7 @@ import android.graphics.Paint;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
+import android.opengl.GLES30;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.support.annotation.NonNull;
@@ -41,6 +42,8 @@ import okhttp3.Response;
 public class GroundActivity extends AppCompatActivity {
     private DatabaseReference mPostReference;
     TouchImageView touchImageView;
+    float min_zoom;
+
     double lat, lon;
     OpenWeatherMapJSON parsedData;
     int groundImgID;
@@ -78,8 +81,8 @@ public class GroundActivity extends AppCompatActivity {
                 0,
                 gpsLocationListener);
 
-        groundImgID = R.id.madang;
-        touchImageView = findViewById(groundImgID);
+        touchImageView = findViewById(R.id.madang);
+
         try {
             WeatherAsyncTask mProcessTask = new WeatherAsyncTask();
             mProcessTask.execute().get();
@@ -107,9 +110,12 @@ public class GroundActivity extends AppCompatActivity {
             public void fail() {}
         });
     }
-
     void databaseLoaded(){
-
+        //get resource ids of cats
+        for(CatInfo c : catInfos) {
+            c.catImgID = getResources().getIdentifier(c.ImgFileName, "drawable", getPackageName());
+        }
+        //get resource ids of furniture
         updateTouchImageView();
     }
 
@@ -228,23 +234,28 @@ public class GroundActivity extends AppCompatActivity {
         Log.d("weather", parsedData.weather.get(0).main);
         switch (parsedData.weather.get(0).main){
             case "Rain":
-                groundImgID = R.drawable.profile;
+                groundImgID = R.drawable.rain;
                 break;
             case "Clouds":
-                groundImgID = R.drawable.testimage;
+                groundImgID = R.drawable.cloud;
                 break;
             default:
-                groundImgID = R.drawable.profile;
+                groundImgID = R.drawable.sunny;
                 break;
         }
     }
 
     private void updateTouchImageView(){
-        //touchImageView.setImageResource(groundImgID);
+        //set min_zoom
+//        Log.d("width,height", (touchImageView.getWidth()) + ", " + (touchImageView.getHeight()));
+//        min_zoom = (float)touchImageView.getWidth() / (float)touchImageView.getHeight();
+//        min_zoom = (min_zoom<1?(1/min_zoom):min_zoom);
+//        Log.d("min_zoom", Float.toString(min_zoom));
+//        touchImageView.setMinZoom(min_zoom);
 
         //create canvas, set background
-        Bitmap background = BitmapFactory.decodeResource(getResources(),groundImgID)
-                .copy(Bitmap.Config.ARGB_8888, true);
+        Bitmap background = BitmapFactory.decodeResource(getResources(),groundImgID);
+        background = resizeBitmap(background);
         Canvas canvas = new Canvas(background);
 
         //draw half-transparent circles, and furniture
@@ -252,18 +263,41 @@ public class GroundActivity extends AppCompatActivity {
         paint.setStyle(Paint.Style.FILL);
         paint.setARGB(127, 255, 255, 255);
         for(ObjectOnGround o : onGround) {
-            if(o.furnitureID == -1)
-                canvas.drawCircle(background.getWidth() * o.position.x,
-                        background.getHeight() * o.position.y,
-                        background.getHeight() * o.radius, paint);
+            int drawPosX = (int)(background.getWidth() * o.position.x);
+            int drawPosY = (int)(background.getHeight() * o.position.y);
+            if(o.furnitureID == -1) {
+                paint.setAlpha(127);
+                canvas.drawCircle(drawPosX, drawPosY, background.getHeight() * o.radius, paint);
+            }
             else {
                 //draw furniture
-                if(o.catID != -1){
-                    //draw cat
-                }
+            }
+
+            o.catID = 0;//temporary changed, delete later
+            if(o.catID != -1){
+                //draw cat
+                Bitmap catBitmap = BitmapFactory.decodeResource(getResources(),catInfos.get(o.catID).catImgID);
+                int newCatX = (int)(0.2*background.getWidth());
+                int newCatY = (int)(0.2*background.getHeight());
+                catBitmap = Bitmap.createScaledBitmap(catBitmap, newCatX, newCatY, false);
+                paint.setAlpha(255);
+                canvas.drawBitmap(catBitmap, drawPosX - (newCatX/2), drawPosY - (newCatY/2), paint);
             }
         }
 
         touchImageView.setImageBitmap(background);
     }
+
+    private Bitmap resizeBitmap(Bitmap bitmap){
+        if(bitmap.getWidth() > GLES30.GL_MAX_TEXTURE_SIZE ||
+                bitmap.getHeight()> GLES30.GL_MAX_TEXTURE_SIZE)
+        {
+            float aspect_ratio = ((float)bitmap.getHeight())/((float)bitmap.getWidth());
+            int resizedWidth = (int)(GLES30.GL_MAX_TEXTURE_SIZE*0.9);
+            int resizedHeight = (int)(GLES30.GL_MAX_TEXTURE_SIZE*0.9*aspect_ratio);
+            return bitmap.createScaledBitmap(bitmap, resizedWidth, resizedHeight, false);
+        }
+        return bitmap;
+    }
+
 }
