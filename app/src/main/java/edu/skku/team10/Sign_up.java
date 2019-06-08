@@ -21,9 +21,12 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.ValueEventListener;
 
+import java.util.HashMap;
+import java.util.Map;
+
 public class Sign_up extends AppCompatActivity {
 
-    private DatabaseReference mDatabase;
+    private DatabaseReference mPostReference;
     FirebaseAuth firebaseAuth;
     EditText email, pw;
     Button signup;
@@ -77,6 +80,13 @@ public class Sign_up extends AppCompatActivity {
     }
 
     public void Push_init(){
-    UserInfo get = new UserInfo(1);
+        UserInfo newuser = new UserInfo(1);
+
+        Map<String, Object> childUpdates = new HashMap<>();
+        Map<String, Object> postValues = null;
+        postValues = newuser.toMap();
+        String [] parsing = T_email.split("@");
+        childUpdates.put("/UserInfo/" + parsing[0], postValues);
+        mPostReference.updateChildren(childUpdates);
     }
 }
