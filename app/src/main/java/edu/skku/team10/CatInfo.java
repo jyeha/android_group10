@@ -14,6 +14,7 @@ public class CatInfo {
     public List<Integer> favoriteFurniture;
     public float scaleX;
     public float scaleY;
+    public int z_index;
 
     public CatInfo(){}
 }

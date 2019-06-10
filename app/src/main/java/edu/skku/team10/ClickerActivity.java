@@ -63,7 +63,7 @@ public class ClickerActivity extends AppCompatActivity {
         ToShop = new Intent(ClickerActivity.this, Store.class);
 
         mPostReference = FirebaseDatabase.getInstance().getReference();
-        // = "TestAccount";
+
         userName = getIntent().getStringExtra("my_name");
         getFirebaseDatabaseInfo(new Callback() {
             @Override
@@ -88,6 +88,13 @@ public class ClickerActivity extends AppCompatActivity {
             }
         });
     }
+
+//    @Override
+//    protected void onDestroy(){
+//        mPostReference = null;
+//        user = null;
+//        super.onDestroy();
+//    }
 
     @Override
     protected void onSaveInstanceState(Bundle outState){
