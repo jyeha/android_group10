@@ -19,21 +19,21 @@ public class CustomView extends View {
         super(context);
 
         //표현될 점을 빨간색으로 표현하기 위해 Paint객체 생성
-        mPaint = new Paint();
-        //Paint의 경계면을 부드럽게 처리할 지 설정(boolean)
-        mPaint.setAntiAlias(true);
-        //Paint의 색 설정
-        mPaint.setColor(Color.RED);
+//        mPaint = new Paint();
+//        //Paint의 경계면을 부드럽게 처리할 지 설정(boolean)
+//        mPaint.setAntiAlias(true);
+//        //Paint의 색 설정
+//        mPaint.setColor(Color.RED);
     }
 
     //xml에서 뷰를 생성할 때 호출되는 생성자
     public CustomView(Context context, AttributeSet attrs) {
         super(context, attrs);
 
-        //내용은 위에 동일
-        mPaint = new Paint();
-        mPaint.setAntiAlias(true);
-        mPaint.setColor(Color.RED);
+//        //내용은 위에 동일
+//        mPaint = new Paint();
+//        mPaint.setAntiAlias(true);
+//        mPaint.setColor(Color.RED);
     }
 
     //뷰에 그림 그리는 행위를 담당하는 메소드
@@ -42,10 +42,10 @@ public class CustomView extends View {
         //canvas.drawColor(Color.WHITE);
 
         //터치 행위가 발생한 경우 해당 위치에 원을 그린다
-        if (x > 0 && y > 0) {
-            // (x - 5, y - 5)를 시작으로 지름이 10인 원을 그린다.
-            canvas.drawCircle(x - 5, y - 5, 10, mPaint);
-        }
+//        if (x > 0 && y > 0) {
+//            // (x - 5, y - 5)를 시작으로 지름이 10인 원을 그린다.
+//            canvas.drawCircle(x - 5, y - 5, 10, mPaint);
+//        }
     }
 
     //터치 이벤트를 처리하는 콜백 메소드
