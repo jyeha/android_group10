@@ -35,6 +35,7 @@ public class UserInfo implements Serializable {
         catsInfo = new ArrayList<>();
         for(int i=0; i<10; ++i) groundFurn.add(-1);
         for(int i=0; i<10; ++i) hasFurniture.add(false);
+        for(int i=0; i<10; ++i) catsInfo.add(new UserCatsInfo());
     }
 
     public UserInfo(int num){
@@ -68,6 +69,7 @@ public class UserInfo implements Serializable {
         catsInfo = new ArrayList<>();
         for(int i=0; i<10; ++i) groundFurn.add(-1);
         for(int i=0; i<10; ++i) hasFurniture.add(false);
+        for(int i=0; i<10; ++i) catsInfo.add(new UserCatsInfo());
     }
 
     public void promotion(int num){
@@ -96,11 +98,16 @@ public class UserInfo implements Serializable {
         result.put("now_money", now_money);
         result.put("groundFurn", groundFurn);
         result.put("hasFurniture", hasFurniture);
+        List<Map<String,Object>> catsInfoList = new ArrayList<>();
+        for(UserCatsInfo c : catsInfo) {
+            catsInfoList.add(c.toMap());
+        }
+        result.put("catsInfo",catsInfoList);
         return result;
     }
 
     public List<ObjectOnGround> updateCatsInfo(List<CatInfo> catInfos, List<ObjectOnGround> objectOnGrounds){
-        SimpleDateFormat sdf = new SimpleDateFormat("yyyy/MM/dd/hh/mm");
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy/MM/dd/HH/mm");
         List<ObjectOnGround> onGrounds = objectOnGrounds;
         Log.d("size of catInfos", String.valueOf(catInfos.size()));
         for(int i = 0; i < catInfos.size(); ++i) {
