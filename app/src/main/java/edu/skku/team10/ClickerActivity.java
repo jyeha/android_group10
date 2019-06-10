@@ -45,6 +45,8 @@ public class ClickerActivity extends AppCompatActivity {
     Animation ani;
     GestureDetector detector;
 
+    boolean iswhile=true;
+
     public interface Callback{
         void success(String msg);
         void fail();
@@ -97,6 +99,7 @@ public class ClickerActivity extends AppCompatActivity {
 
     @Override
     public void onBackPressed(){
+        iswhile=false;
         postFirebaseUserInfo(true);
         super.onBackPressed();
     }
@@ -111,6 +114,7 @@ public class ClickerActivity extends AppCompatActivity {
     @Override
     protected void onSaveInstanceState(Bundle outState){
         super.onSaveInstanceState(outState);
+        iswhile=false;
         postFirebaseUserInfo(true);
     }
 //    @Override
@@ -182,7 +186,14 @@ public class ClickerActivity extends AppCompatActivity {
 
                         //터치 한 곳에 이미지를 표현하기 위해 동적으로 ImageView 생성
                         img = new ImageView(getApplicationContext());
-                        img.setImageResource(R.drawable.twinkle);
+
+                        if(user.rank==1){
+                            img.setImageResource(R.drawable.hundred);
+                        } else if(user.rank==2){
+                            img.setImageResource(R.drawable.fivehundred);
+                        } else if(user.rank==3){
+                            img.setImageResource(R.drawable.thousand);
+                        }
 
                         //이미지가 저장될 곳의 x,y좌표를 표현
                         img.setX(x-40);
@@ -316,8 +327,9 @@ public class ClickerActivity extends AppCompatActivity {
         @Override
         protected Integer doInBackground(Integer... params){
             int cnt=0;
+
             // 현재 소지금액 update
-            while(true) {
+            while(iswhile) {
                 try {
                     cnt++;
                     if(cnt%12==0){
@@ -334,6 +346,7 @@ public class ClickerActivity extends AppCompatActivity {
                     e.printStackTrace();
                 }
             }
+            return 0;
         }
         @Override
         protected void onPostExecute(Integer result){
