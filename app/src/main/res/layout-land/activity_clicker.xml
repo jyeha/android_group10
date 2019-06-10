@@ -77,21 +77,27 @@
     android:id="@+id/RL"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@drawable/verticalclicker"
     tools:context=".ClickerActivity">
 
     <TextView
         android:id="@+id/info"
-        android:layout_width="395dp"
+        android:layout_width="match_parent"
         android:layout_height="70dp"
         android:layout_alignParentTop="true"
         android:layout_marginStart="11dp"
         android:layout_marginLeft="20dp"
         android:layout_marginTop="16dp"
         android:layout_marginEnd="9dp"
-        android:layout_marginRight="9dp"
+        android:layout_marginRight="0dp"
         android:layout_marginBottom="10dp"
-        android:text=" "
-        android:textSize="18dp" />
+        android:background="@drawable/textviewdesign"
+        android:textColor="#FFFFFF"
+        android:text="으아아\n으아아아\n으아아아아"
+        android:textSize="15dp"
+        android:paddingTop="7dp"
+        android:paddingBottom="7dp"
+        android:paddingLeft="13dp"/>
 
     <edu.skku.team10.CustomView
         android:id="@+id/customview"
@@ -102,20 +108,21 @@
         android:layout_marginLeft="11dp"
         android:layout_marginEnd="11dp"
         android:layout_marginRight="11dp"
-        android:background="#FFFFFF" />
+        android:background="#00FFFFFF" />
 
     <Button
         android:id="@+id/upgrade"
         android:layout_width="150dp"
         android:layout_height="70dp"
         android:layout_alignParentRight="true"
-        android:layout_marginStart="11dp"
-        android:layout_marginLeft="11dp"
         android:layout_marginTop="16dp"
         android:layout_marginEnd="11dp"
         android:layout_marginRight="13dp"
         android:layout_marginBottom="10dp"
-        android:text="진급한다!" />
+        android:background="@drawable/promotiondesign_land"
+        android:text="진급한다!"
+        android:textSize="20dp"
+        android:textColor="#FFFFFF"/>
 
     <Button
         android:id="@+id/GotoShop"
@@ -123,9 +130,11 @@
         android:layout_height="70dp"
         android:layout_alignParentTop="true"
         android:layout_marginTop="16dp"
-        android:layout_marginEnd="11dp"
         android:layout_marginRight="0dp"
         android:layout_marginBottom="10dp"
-        android:layout_toRightOf="@id/info"
-        android:text="SHOP" />
+        android:layout_toLeftOf="@id/upgrade"
+        android:background="@drawable/shopbuttonshape_land"
+        android:text="SHOP"
+        android:textSize="20dp"
+        android:textColor="#FFFFFF"/>
 </RelativeLayout>

@@ -11,6 +11,7 @@ import android.util.Log;
 import android.view.GestureDetector;
 import android.view.MotionEvent;
 import android.view.View;
+import android.view.WindowManager;
 import android.view.animation.AccelerateDecelerateInterpolator;
 import android.view.animation.AlphaAnimation;
 import android.view.animation.Animation;
@@ -52,7 +53,10 @@ public class ClickerActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
+                WindowManager.LayoutParams.FLAG_FULLSCREEN);
         setContentView(R.layout.activity_clicker);
+        getSupportActionBar().hide();
 
         info = (TextView)findViewById(R.id.info);
         promote = (Button)findViewById(R.id.upgrade);
@@ -83,10 +87,18 @@ public class ClickerActivity extends AppCompatActivity {
         shop.setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View v){
+                postFirebaseUserInfo(true);
                 ToShop.putExtra("my_name", userName);
                 startActivity(ToShop);
             }
         });
+
+    }
+
+    @Override
+    public void onBackPressed(){
+        postFirebaseUserInfo(true);
+        super.onBackPressed();
     }
 
 //    @Override
