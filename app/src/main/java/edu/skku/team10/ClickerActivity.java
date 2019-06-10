@@ -89,6 +89,13 @@ public class ClickerActivity extends AppCompatActivity {
         });
     }
 
+//    @Override
+//    protected void onDestroy(){
+//        mPostReference = null;
+//        user = null;
+//        super.onDestroy();
+//    }
+
     @Override
     protected void onSaveInstanceState(Bundle outState){
         super.onSaveInstanceState(outState);

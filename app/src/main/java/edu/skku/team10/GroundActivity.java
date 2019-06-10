@@ -21,6 +21,7 @@ import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
+import android.util.Pair;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.Button;
@@ -39,6 +40,7 @@ import com.google.gson.JsonParser;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -70,6 +72,9 @@ public class GroundActivity extends AppCompatActivity {
         void success(String msg);
         void fail();
     }
+
+    Handler mHandler;
+    Runnable mHandlerTask;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -139,6 +144,7 @@ public class GroundActivity extends AppCompatActivity {
             }
         });
     }
+
     void databaseLoaded(){
         //get resource ids of cats
         for(CatInfo c : catInfos) {
@@ -173,10 +179,8 @@ public class GroundActivity extends AppCompatActivity {
             }
         });
 
-        Handler mHandler = new Handler();
-
-        Runnable mHandlerTask = new Runnable()
-        {
+        mHandler = new Handler();
+        mHandlerTask = new Runnable() {
             @Override
             public void run() {
                 Log.d("update user cats", new SimpleDateFormat("yyyy/MM/dd/hh/mm").format(Calendar.getInstance().getTime()));
@@ -367,11 +371,14 @@ public class GroundActivity extends AppCompatActivity {
         min_zoom = (min_zoom<1?(1/min_zoom):min_zoom);
         Log.d("min_zoom", Float.toString(min_zoom));
         touchImageView.setMinZoom(min_zoom);
+        if(touchImageView.getCurrentZoom() < min_zoom)
+            touchImageView.setZoom(min_zoom);
 
         //create canvas, set background
         background = BitmapFactory.decodeResource(getResources(),groundImgID);
         background = resizeBitmap(background);
         Canvas canvas = new Canvas(background);
+        List<DrawInfo> drawList = new ArrayList<>();
 
         //draw half-transparent circles, and furniture
         Paint paint = new Paint();
@@ -389,12 +396,13 @@ public class GroundActivity extends AppCompatActivity {
             else {
                 //draw furniture
                 FurnitureInfo f = furnitureInfos.get(drawFurnID);
-                Bitmap catBitmap = BitmapFactory.decodeResource(getResources(), f.furnitureImgID);
+                Bitmap furnBitmap = BitmapFactory.decodeResource(getResources(), f.furnitureImgID);
                 int newFurnX = (int)(f.scaleX*background.getWidth());
                 int newFurnY = (int)(f.scaleY*background.getHeight());
-                catBitmap = Bitmap.createScaledBitmap(catBitmap, newFurnX, newFurnY, false);
-                paint.setAlpha(255);
-                canvas.drawBitmap(catBitmap, drawPosX - (newFurnX/2), drawPosY - (newFurnY/2), paint);
+                furnBitmap = Bitmap.createScaledBitmap(furnBitmap, newFurnX, newFurnY, false);
+                drawList.add(new DrawInfo(furnBitmap, drawPosX - (newFurnX/2), drawPosY - (newFurnY/2), f.z_index));
+                //paint.setAlpha(255);
+                //canvas.drawBitmap(furnBitmap, drawPosX - (newFurnX/2), drawPosY - (newFurnY/2), paint);
             }
 
             if(userInfo.groundFurn.get(o.index) != -1 && o.catID != -1){
@@ -404,12 +412,37 @@ public class GroundActivity extends AppCompatActivity {
                 int newCatX = (int)(c.scaleX*background.getWidth());
                 int newCatY = (int)(c.scaleY*background.getHeight());
                 catBitmap = Bitmap.createScaledBitmap(catBitmap, newCatX, newCatY, false);
-                paint.setAlpha(255);
-                canvas.drawBitmap(catBitmap, drawPosX - (newCatX/2), drawPosY - (newCatY/2), paint);
+                drawList.add(new DrawInfo(catBitmap, drawPosX - (newCatX/2), drawPosY - (newCatY/2), c.z_index));
+                //paint.setAlpha(255);
+                //canvas.drawBitmap(catBitmap, drawPosX - (newCatX/2), drawPosY - (newCatY/2), paint);
             }
         }
 
+        drawList.sort(new Comparator<DrawInfo>() {
+            @Override
+            public int compare(DrawInfo o1, DrawInfo o2) {
+                return o1.z_index - o2.z_index;
+            }
+        });
+
+        paint.setAlpha(255);
+        for(DrawInfo d : drawList)
+            canvas.drawBitmap(d.bitmap, d.x, d.y, paint);
+
         touchImageView.setImageBitmap(background);
+    }
+
+    private class DrawInfo {
+        Bitmap bitmap;
+        int x;
+        int y;
+        int z_index;
+        public DrawInfo(Bitmap b, int x, int y, int z_index){
+            this.bitmap = b;
+            this.x = x;
+            this.y = y;
+            this.z_index = z_index;
+        }
     }
 
     private void createPopupWindow(int idx) {
