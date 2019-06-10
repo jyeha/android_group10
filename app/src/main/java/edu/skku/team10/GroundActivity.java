@@ -99,6 +99,8 @@ public class GroundActivity extends AppCompatActivity {
             ActivityCompat.requestPermissions( GroundActivity.this, new String[]
                             { android.Manifest.permission.ACCESS_FINE_LOCATION },
                     0 );
+            finish();
+            return;
         }
 
         //get weather with GPS location
