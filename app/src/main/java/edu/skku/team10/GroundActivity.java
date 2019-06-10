@@ -424,8 +424,8 @@ public class GroundActivity extends AppCompatActivity {
                 bitmap.getHeight()> GLES30.GL_MAX_TEXTURE_SIZE)
         {
             float aspect_ratio = ((float)bitmap.getHeight())/((float)bitmap.getWidth());
-            int resizedWidth = (int)(GLES30.GL_MAX_TEXTURE_SIZE*0.5);
-            int resizedHeight = (int)(GLES30.GL_MAX_TEXTURE_SIZE*0.5*aspect_ratio);
+            int resizedWidth = (int)(GLES30.GL_MAX_TEXTURE_SIZE*0.9);
+            int resizedHeight = (int)(GLES30.GL_MAX_TEXTURE_SIZE*0.9*aspect_ratio);
             return bitmap.createScaledBitmap(bitmap, resizedWidth, resizedHeight, false);
         }
         return bitmap;
