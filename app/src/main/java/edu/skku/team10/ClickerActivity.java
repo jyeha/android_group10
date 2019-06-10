@@ -136,6 +136,25 @@ public class ClickerActivity extends AppCompatActivity {
             @Override
             public boolean onDown(MotionEvent e) {
                 check_long = 0;
+                x=e.getX();
+                y=e.getY();
+                img = new ImageView(getApplicationContext());
+
+                if(user.rank==1){
+                    img.setImageResource(R.drawable.hundred);
+                } else if(user.rank==2){
+                    img.setImageResource(R.drawable.fivehundred);
+                } else if(user.rank==3){
+                    img.setImageResource(R.drawable.thousand);
+                }
+
+                //이미지가 저장될 곳의 x,y좌표를 표현
+                img.setX(x-40);
+                img.setY(y+180);
+                //최상단 릴레이티브 레이아웃에 이미지를 Add
+                container.addView(img);
+
+                fadeOutAndHIdeImage(img);
                 return true;
             }
 
@@ -147,6 +166,26 @@ public class ClickerActivity extends AppCompatActivity {
             @Override
             public boolean onSingleTapUp(MotionEvent e) {
                 if (check_long == 0){
+//                    x=e.getX();
+//                    y=e.getY();
+//                    img = new ImageView(getApplicationContext());
+//
+//                    if(user.rank==1){
+//                        img.setImageResource(R.drawable.hundred);
+//                    } else if(user.rank==2){
+//                        img.setImageResource(R.drawable.fivehundred);
+//                    } else if(user.rank==3){
+//                        img.setImageResource(R.drawable.thousand);
+//                    }
+//
+//                    //이미지가 저장될 곳의 x,y좌표를 표현
+//                    img.setX(x-40);
+//                    img.setY(y+180);
+//                    //최상단 릴레이티브 레이아웃에 이미지를 Add
+//                    container.addView(img);
+//
+//                    fadeOutAndHIdeImage(img);
+
                     user.now_money+=user.touch;
                     user.now_need_money=user.need_money-user.now_money;
                     if(user.now_need_money<0){
@@ -178,38 +217,38 @@ public class ClickerActivity extends AppCompatActivity {
         TouchArea.setOnTouchListener(new View.OnTouchListener(){
             @Override
             public boolean onTouch(View view, MotionEvent motionEvent){
-                switch (motionEvent.getAction()) {
-                    //Down이 발생한 경우
-                    case MotionEvent.ACTION_DOWN :
-                        x = motionEvent.getX();
-                        y = motionEvent.getY();
-
-                        //터치 한 곳에 이미지를 표현하기 위해 동적으로 ImageView 생성
-                        img = new ImageView(getApplicationContext());
-
-                        if(user.rank==1){
-                            img.setImageResource(R.drawable.hundred);
-                        } else if(user.rank==2){
-                            img.setImageResource(R.drawable.fivehundred);
-                        } else if(user.rank==3){
-                            img.setImageResource(R.drawable.thousand);
-                        }
-
-                        //이미지가 저장될 곳의 x,y좌표를 표현
-                        img.setX(x-40);
-                        img.setY(y+180);
-                        //최상단 릴레이티브 레이아웃에 이미지를 Add
-                        container.addView(img);
-
-                        fadeOutAndHIdeImage(img);
-                        break;
-
-                    //Up이 발생한 경우
-                    case MotionEvent.ACTION_UP :
-
-                        break;
-
-                }
+//                switch (motionEvent.getAction()) {
+//                    //Down이 발생한 경우
+//                    case MotionEvent.ACTION_DOWN :
+//                        x = motionEvent.getX();
+//                        y = motionEvent.getY();
+//
+//                        //터치 한 곳에 이미지를 표현하기 위해 동적으로 ImageView 생성
+//                        img = new ImageView(getApplicationContext());
+//
+//                        if(user.rank==1){
+//                            img.setImageResource(R.drawable.hundred);
+//                        } else if(user.rank==2){
+//                            img.setImageResource(R.drawable.fivehundred);
+//                        } else if(user.rank==3){
+//                            img.setImageResource(R.drawable.thousand);
+//                        }
+//
+//                        //이미지가 저장될 곳의 x,y좌표를 표현
+//                        img.setX(x-40);
+//                        img.setY(y+180);
+//                        //최상단 릴레이티브 레이아웃에 이미지를 Add
+//                        container.addView(img);
+//
+//                        fadeOutAndHIdeImage(img);
+//                        break;
+//
+//                    //Up이 발생한 경우
+//                    case MotionEvent.ACTION_UP :
+//
+//                        break;
+//
+//                }
 
                 //false를 반환하여 뷰 내에 재정의한 onTouchEvent 메소드로 이벤트를 전달한다
                 detector.onTouchEvent(motionEvent);
