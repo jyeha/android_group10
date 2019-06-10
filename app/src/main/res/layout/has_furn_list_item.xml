@@ -1,12 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
 <android.support.constraint.ConstraintLayout
     xmlns:android="http://schemas.android.com/apk/res/android" android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:background="#2E2E2E">
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:orientation="horizontal">
+        android:orientation="horizontal"
+        android:background="#2E2E2E">
 
         <ImageView
             android:layout_width="wrap_content"
@@ -18,7 +20,8 @@
             android:orientation="vertical"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
-            android:layout_weight="4">
+            android:layout_weight="4"
+            android:background="#2E2E2E">
 
             <TextView
                 android:layout_width="match_parent"
@@ -26,9 +29,10 @@
                 android:text="New Text"
                 android:id="@+id/furnName"
                 android:textSize="24dp"
-                android:textColor="#000000"
+                android:textColor="#FFFFFF"
                 android:gravity="center_vertical"
-                android:layout_weight="2" />
+                android:layout_weight="2"
+                android:background="#2E2E2E"/>
 
             <TextView
                 android:layout_width="match_parent"
@@ -36,8 +40,9 @@
                 android:text="New Text"
                 android:id="@+id/furnDesc"
                 android:textSize="16dp"
-                android:textColor="#666666"
-                android:layout_weight="1" />
+                android:textColor="#DDDDDD"
+                android:layout_weight="1"
+                android:background="#2E2E2E"/>
         </LinearLayout>
 
     </LinearLayout>

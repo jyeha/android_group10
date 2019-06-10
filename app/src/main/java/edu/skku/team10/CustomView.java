@@ -39,7 +39,7 @@ public class CustomView extends View {
     //뷰에 그림 그리는 행위를 담당하는 메소드
     protected void onDraw(Canvas canvas) {
         //뷰의 배경색을 흰색으로 칠한다
-        canvas.drawColor(Color.WHITE);
+        //canvas.drawColor(Color.WHITE);
 
         //터치 행위가 발생한 경우 해당 위치에 원을 그린다
         if (x > 0 && y > 0) {

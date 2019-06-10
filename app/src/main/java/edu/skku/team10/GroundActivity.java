@@ -24,7 +24,9 @@ import android.util.Log;
 import android.util.Pair;
 import android.view.MotionEvent;
 import android.view.View;
+import android.view.WindowManager;
 import android.widget.Button;
+import android.widget.ImageButton;
 
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -73,12 +75,16 @@ public class GroundActivity extends AppCompatActivity {
         void fail();
     }
 
+    ImageButton gotoClicker;
+
     Handler mHandler;
     Runnable mHandlerTask;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
+                WindowManager.LayoutParams.FLAG_FULLSCREEN);
         setContentView(R.layout.activity_ground);
         getSupportActionBar().hide();
 
@@ -134,7 +140,7 @@ public class GroundActivity extends AppCompatActivity {
         });
 
         //connect button pressed event, goto clicker activity
-        Button gotoClicker = findViewById(R.id.gotoClicker);
+        gotoClicker = findViewById(R.id.gotoClicker);
         gotoClicker.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -205,6 +211,8 @@ public class GroundActivity extends AppCompatActivity {
             }
         };
         mHandlerTask.run();
+
+        gotoClicker.setVisibility(View.VISIBLE);
         //get resource ids of furniture
         updateTouchImageView();
     }

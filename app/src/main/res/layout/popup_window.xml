@@ -4,19 +4,22 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:background="#2E2E2E">
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical"
         tools:layout_editor_absoluteX="16dp"
-        tools:layout_editor_absoluteY="16dp">
+        tools:layout_editor_absoluteY="16dp"
+        android:background="#2E2E2E">
 
         <ListView
             android:id="@+id/hasFurnList"
             android:layout_width="395dp"
-            android:layout_height="715dp">
+            android:layout_height="715dp"
+            android:background="#2E2E2E">
 
         </ListView>
     </LinearLayout>
