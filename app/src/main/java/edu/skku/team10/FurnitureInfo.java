@@ -12,6 +12,7 @@ public class FurnitureInfo implements Serializable {
     public float scaleY;
     public boolean isOnGround;
     public String Description;
+    public int z_index;
 
     public FurnitureInfo(){}
 

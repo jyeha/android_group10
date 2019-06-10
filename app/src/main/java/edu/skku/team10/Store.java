@@ -85,6 +85,12 @@ public class Store extends AppCompatActivity {
 
     }
 
+    @Override
+    protected void onDestroy() {
+        mPostReference = null;
+        user = null;
+        super.onDestroy();
+    }
 
     private void updateButtonAvailable() {
         adapter = new Adapter();
