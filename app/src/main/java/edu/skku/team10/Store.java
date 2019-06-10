@@ -197,6 +197,7 @@ public class Store extends AppCompatActivity {
                     minus_money = item.furniturePrice;
                     Log.d("버튼", String.valueOf(item.furniturePrice));
                     Log.d("가구번호", String.valueOf(item.furnitureID));
+                    Toast.makeText(Store.this, "구입완료", Toast.LENGTH_SHORT).show();
 
                     Map<String, Object> childUpdates = new HashMap<>();
                     childUpdates.put("/UserInfo/"+username+"/hasFurniture/" + item.furnitureID , true);
